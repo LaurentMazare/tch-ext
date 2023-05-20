@@ -1,26 +1,22 @@
-use pyo3::prelude::*;
-use pyo3::{
-    exceptions::{PyTypeError, PyValueError},
-    AsPyPointer,
-};
+use pyo3::{exceptions, prelude::*, AsPyPointer};
 
 pub struct PyTensor(pub tch::Tensor);
 
 pub fn wrap_tch_err(err: tch::TchError) -> PyErr {
-    PyErr::new::<PyValueError, _>(format!("{err:?}"))
+    PyErr::new::<exceptions::PyValueError, _>(format!("{err:?}"))
 }
 
 impl<'source> FromPyObject<'source> for PyTensor {
     fn extract(ob: &'source PyAny) -> PyResult<Self> {
         let ptr = ob.as_ptr() as *mut tch::python::CPyObject;
-        let tensor = unsafe { tch::Tensor::pyobject_unpack(ptr) };
-        tensor
-            .map_err(wrap_tch_err)?
-            .ok_or_else(|| {
-                let type_ = ob.get_type();
-                PyErr::new::<PyTypeError, _>(format!("expected a torch.Tensor, got {type_}"))
-            })
-            .map(PyTensor)
+        match unsafe { tch::Tensor::pyobject_unpack(ptr) } {
+            Err(err) => Err(wrap_tch_err(err))?,
+            Ok(None) => {
+                let msg = format!("expected a torch.Tensor, got {}", ob.get_type());
+                Err(PyErr::new::<exceptions::PyTypeError, _>(msg))?
+            }
+            Ok(Some(tensor)) => Ok(PyTensor(tensor)),
+        }
     }
 }
 
