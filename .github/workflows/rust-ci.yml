@@ -59,7 +59,9 @@ jobs:
         env:
           LIBTORCH_USE_PYTORCH: 1
       - name: Run test
-        run: python test.py
+        run: |
+          cp -f target/debug/libtch_ext.so tch_ext.so
+          python test.py
 
   fmt:
     name: Rustfmt
@@ -82,6 +84,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install PyTorch
+        run: |
+          python -m pip install --upgrade pip
+          pip3 install torch==2.0.0 --index-url https://download.pytorch.org/whl/cpu
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -92,3 +102,5 @@ jobs:
         with:
           command: clippy
           args: --examples --tests --all-features -- -D warnings
+        env:
+          LIBTORCH_USE_PYTORCH: 1
