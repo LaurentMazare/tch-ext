@@ -28,6 +28,8 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: check
+        env:
+          LIBTORCH_USE_PYTORCH: 1
 
   test:
     name: Test Suite
@@ -53,8 +55,11 @@ jobs:
           override: true
       - uses: actions-rs/cargo@v1
         with:
-          command: test
-          args: --features download-libtorch
+          command: build
+        env:
+          LIBTORCH_USE_PYTORCH: 1
+      - name: Run test
+        run: python test.py
 
   fmt:
     name: Rustfmt
