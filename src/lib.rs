@@ -1,11 +1,9 @@
 use pyo3::prelude::*;
-
-mod pytensor;
-use pytensor::{wrap_tch_err, PyTensor};
+use pyo3_tch::{wrap_tch_err, PyTensor};
 
 #[pyfunction]
 fn add_one(tensor: PyTensor) -> PyResult<PyTensor> {
-    let tensor = tensor.0.f_add_scalar(1.0).map_err(wrap_tch_err)?;
+    let tensor = tensor.f_add_scalar(1.0).map_err(wrap_tch_err)?;
     Ok(PyTensor(tensor))
 }
 
