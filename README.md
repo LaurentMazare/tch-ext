@@ -7,18 +7,19 @@ that manipulates PyTorch tensors via [PyO3](https://github.com/PyO3/pyo3).
 This is currently experimental hence requires some unsafe code until this has
 been stabilized.
 
-In order to build the extension and test the plugin, run the following in a
-Python environment that has torch installed from the root of the github repo.
+In order to build the extension and test the plugin, run the following command
+from the rott of the github repo. This requires a Python environment that has
+the appropriate torch version installed.
 
 ```bash
 LIBTORCH_USE_PYTORCH=1 cargo build && cp -f target/debug/libtch_ext.so tch_ext.so
 python test.py
 ```
 
-It is recommended to run the build with `LIBTORCH_USE_PYTORCH` set, this will
-result in using the libtorch C++ library from the Python install in `tch` and
-will ensure that this is at the proper version (having `tch` using a different
-libtorch version from the one used by the Python runtime may result in segfaults).
+Setting `LIBTORCH_USE_PYTORCH` results in using the libtorch C++ library from the
+Python install in `tch` and ensures that this is at the proper version (having `tch`
+using a different libtorch version from the one used by the Python runtime may result
+in segfaults).
 
 ## Colab Notebook
 
