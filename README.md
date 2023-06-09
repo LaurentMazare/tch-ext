@@ -4,11 +4,8 @@ This sample crate shows how to use
 [tch](https://github.com/LaurentMazare/tch-rs) to write a Python extension
 that manipulates PyTorch tensors via [PyO3](https://github.com/PyO3/pyo3).
 
-This is currently experimental hence requires some unsafe code until this has
-been stabilized.
-
 In order to build the extension and test the plugin, run the following command
-from the rott of the github repo. This requires a Python environment that has
+from the root of the github repo. This requires a Python environment that has
 the appropriate torch version installed.
 
 ```bash
