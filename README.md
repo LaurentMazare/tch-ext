@@ -4,6 +4,21 @@ This sample crate shows how to use
 [tch](https://github.com/LaurentMazare/tch-rs) to write a Python extension
 that manipulates PyTorch tensors via [PyO3](https://github.com/PyO3/pyo3).
 
+There is a single function exposed by the Python extension which adds one to the
+input tensor. The relevant code is as follows:
+```rust
+#[pyfunction]
+fn add_one(tensor: PyTensor) -> PyResult<PyTensor> {
+    let tensor = tensor.f_add_scalar(1.0).map_err(wrap_tch_err)?;
+    Ok(PyTensor(tensor))
+}
+```
+
+It is recommended to use the `f_` methods so that potential errors in the `tch`
+crate do not result in a crash of the Python interpreter.
+
+## Compiling the Extension
+
 In order to build the extension and test the plugin, run the following command
 from the root of the github repo. This requires a Python environment that has
 the appropriate torch version installed.
